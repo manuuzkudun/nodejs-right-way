@@ -9,13 +9,19 @@ const
 		// reporting to the server
 		console.log('Subscriber connected.');
 		// reporting to the client
-		connection.write("Now watching '" + filename + "' for changes...\n");
+		connection.write(connection.write(JSON.stringify({
+			type: 'watching',
+			file: filename
+		}) + '\n');
 
 		// watcher setup
 		let watcher = fs.watch(filename, function() {
 			// Send a message to the client when the file changes
-			connection.write("File '" + filename + "' changed: " + Date.now() + "\n");
-		});
+			connection.write(connection.write(JSON.stringify({
+				type: 'changed',
+				file: filename,
+				timestamp: Date.now()
+			}) + '\n');
 
 		// Send a message to the console when client disconects
 		connection.on('close', function() {
